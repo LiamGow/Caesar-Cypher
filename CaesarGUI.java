@@ -1,10 +1,5 @@
-package caesar.cypher;
-
-/**
- *
- * @author Liam
- */
-
+ 
+ 
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -29,7 +24,7 @@ import javax.swing.ScrollPaneConstants;
 public class CaesarGUI extends JFrame implements ActionListener {
  
         private static final long serialVersionUID = 1L;
-        private static String alphabet = "abcdefghijklmnopqrstuvwxyz";
+        private static String alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
         private JTextField shiftFactor;
         private JTextArea inputTA;
         private JTextArea outputTA;
@@ -60,7 +55,7 @@ public class CaesarGUI extends JFrame implements ActionListener {
                 }
                 //Map every letter of the alphabet to another letter in the alphabet, shifted by x places.
                 for(int i=0; i<alphabet.length(); i++){
-                        alphaMap.put(alphabet.charAt(i), alphabet.charAt((i+shift)%26));
+                        alphaMap.put(alphabet.charAt(i), alphabet.charAt((i+shift)%alphabet.length()));
                 }
                 //Get input text and put it all to lower-case so it's easy to convert
                 String inputText = inputTA.getText().toLowerCase();
@@ -78,13 +73,13 @@ public class CaesarGUI extends JFrame implements ActionListener {
                 int shift;
                 String textNum = this.shiftFactor.getText();
                 if(!textNum.equals("")){
-                        shift = Integer.parseInt(textNum)%26;
+                        shift = Integer.parseInt(textNum)%alphabet.length();
                 }
                 else{
                         shift = 0;
                 }
                 for(int i=0; i<alphabet.length(); i++){
-                        alphaMap.put(alphabet.charAt((i+shift)%26), alphabet.charAt(i));
+                        alphaMap.put(alphabet.charAt((i+shift)%alphabet.length()), alphabet.charAt(i));
                 }
                 String inputText = inputTA.getText().toLowerCase();
                 String outputText = "";
