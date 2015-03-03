@@ -65,7 +65,7 @@ public class CaesarGUI extends JFrame implements ActionListener {
                         outputText = outputText.concat(alphaMap.get(inputText.charAt(j)).toString());
                 }
                 //Output the encrypted text
-                outputTA.setText(outputText);
+                inputTA.setText(outputText);
         }
        
         public void decryptText() throws InterruptedException{
@@ -86,7 +86,7 @@ public class CaesarGUI extends JFrame implements ActionListener {
                 for(int j=0; j<inputText.length(); j++){
                         outputText = outputText.concat(alphaMap.get(inputText.charAt(j)).toString());
                 }
-                outputTA.setText(outputText);
+                inputTA.setText(outputText);
         }
        
         public CaesarGUI(){
@@ -106,13 +106,13 @@ public class CaesarGUI extends JFrame implements ActionListener {
             scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
             content.add(scroller);
            
-            outputTA = new JTextArea("Output text.",12, 40);
+            /*outputTA = new JTextArea("Output text.",12, 40);
             outputTA.setLineWrap(true);
             outputTA.setWrapStyleWord(true);
             outputTA.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
             JScrollPane scroller2 = new JScrollPane(outputTA);
             scroller2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-            content.add(scroller2);
+            content.add(scroller2);*/
            
             JPanel box1 = new JPanel();
             box1.setLayout(new FlowLayout());
