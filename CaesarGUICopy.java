@@ -37,18 +37,6 @@ public class CaesarGUI extends JFrame implements ActionListener {
         public static void main(String[] args) {
                 new CaesarGUI().setVisible(true);
         }
-        
-        private int getShift(int length) {
-            
-            String textNum = this.shiftFactor.getText();
-            
-                if(!textNum.equals("")){
-                        shift = Integer.parseInt(textNum)%length;
-                }
-                else{
-                        shift = 13;
-                }
-        }
        
         public void encryptText() throws InterruptedException {
                 //Create a HashMap
@@ -167,13 +155,10 @@ public class CaesarGUI extends JFrame implements ActionListener {
             box1.setLayout(new FlowLayout());
             JButton decryptButton = new JButton("Decrypt");
             JButton encryptButton = new JButton("Encrypt");
-            JButton rotButton = new JButton("Rotate");
             decryptButton.addActionListener(this);
             encryptButton.addActionListener(this);
-            rotButton.addActionListener(this);
             box1.add(decryptButton);
             box1.add(encryptButton);
-            box1.add(rotButton);
             box1.add(new JLabel("Shift Factor"));
             box1.add(this.shiftFactor = new JTextField(20));
             this.shiftFactor.setText("1");
@@ -186,7 +171,7 @@ public class CaesarGUI extends JFrame implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             
-            int rotShift = getShift(alphabetOnly.length());
+            int shift = Integer.parseInt(this.shiftFactor.getText());
             
                 if(e.getActionCommand().equals("Encrypt")){
                         try{
@@ -200,12 +185,6 @@ public class CaesarGUI extends JFrame implements ActionListener {
                       try {
                         decryptText();
                       } catch (InterruptedException e1) {
-                        e1.printStackTrace();
-                      }
-                if(e.getActionCommand().equals("Rotate"))
-                      try {
-                          rotEncrypt(rotShift);
-                      } catch () (InterruptedException e1) {
                         e1.printStackTrace();
                       }
         }
