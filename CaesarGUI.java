@@ -1,4 +1,4 @@
- 
+import java.awt.*;
  
 import java.awt.Container;
 import java.awt.FlowLayout;
@@ -24,7 +24,7 @@ import javax.swing.ScrollPaneConstants;
 public class CaesarGUI extends JFrame implements ActionListener {
  
         private static final long serialVersionUID = 1L;
-        private static String alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
+        private static String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 !@#$%^&*()-_+={}.,";
         private JTextField shiftFactor;
         private JTextArea inputTA;
         private JTextArea outputTA;
@@ -48,17 +48,17 @@ public class CaesarGUI extends JFrame implements ActionListener {
                 //If there wasn't, set shift to zero,
                 //Otherwise parse the input value to an integer so we can use it.
                 if(!textNum.equals("")){
-                        shift = Integer.parseInt(textNum)%26;
+                        shift = Integer.parseInt(textNum)%alphabet.length();
                 }
                 else{
-                        shift = 0;
+                        shift = 1;
                 }
                 //Map every letter of the alphabet to another letter in the alphabet, shifted by x places.
                 for(int i=0; i<alphabet.length(); i++){
                         alphaMap.put(alphabet.charAt(i), alphabet.charAt((i+shift)%alphabet.length()));
                 }
                 //Get input text and put it all to lower-case so it's easy to convert
-                String inputText = inputTA.getText().toLowerCase();
+                String inputText = inputTA.getText();
                 String outputText = "";
                 //Go to each letter and switch it with it's shifted counterpart
                 for(int j=0; j<inputText.length(); j++){
@@ -76,12 +76,12 @@ public class CaesarGUI extends JFrame implements ActionListener {
                         shift = Integer.parseInt(textNum)%alphabet.length();
                 }
                 else{
-                        shift = 0;
+                        shift = 1;
                 }
                 for(int i=0; i<alphabet.length(); i++){
                         alphaMap.put(alphabet.charAt((i+shift)%alphabet.length()), alphabet.charAt(i));
                 }
-                String inputText = inputTA.getText().toLowerCase();
+                String inputText = inputTA.getText();
                 String outputText = "";
                 for(int j=0; j<inputText.length(); j++){
                         outputText = outputText.concat(alphaMap.get(inputText.charAt(j)).toString());
@@ -103,7 +103,7 @@ public class CaesarGUI extends JFrame implements ActionListener {
             inputTA.setWrapStyleWord(true);
             inputTA.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
             JScrollPane scroller = new JScrollPane(inputTA);
-            scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+            scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
             content.add(scroller);
            
             /*outputTA = new JTextArea("Output text.",12, 40);
@@ -124,6 +124,8 @@ public class CaesarGUI extends JFrame implements ActionListener {
             box1.add(encryptButton);
             box1.add(new JLabel("Shift Factor"));
             box1.add(this.shiftFactor = new JTextField(20));
+            this.shiftFactor.setText("1");
+            box1.setBackground(Color.YELLOW);
             content.add(box1);
            
             pack();
