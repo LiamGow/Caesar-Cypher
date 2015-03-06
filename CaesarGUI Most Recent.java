@@ -1,3 +1,5 @@
+package caesar;
+
 import java.awt.*;
  
 import java.awt.Container;
@@ -6,6 +8,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -29,6 +32,7 @@ public class CaesarGUI extends JFrame implements ActionListener {
         private static final String upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         private static String alphabetPlus = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 !@#$%^&*()-_+={}.,";
         private JTextField shiftFactor;
+        private JTextField keyPhrase;
         private JTextArea inputTA;
         //private JTextArea outputTA;
  
@@ -54,8 +58,15 @@ public class CaesarGUI extends JFrame implements ActionListener {
                 }
             return shift;
         }
+        
+        private String getKey() {
+            
+            String key = this.keyPhrase.getText();
+            return key;
+            
+        }
        
-        public void encryptText() throws InterruptedException {
+        public void encryptText(boolean vigenere) throws InterruptedException {
                 //Create a HashMap
                 //A hash map takes keys and values, which are both Characters in this case.
                 HashMap<Character, Character> alphaMap = new HashMap<>();
@@ -72,9 +83,31 @@ public class CaesarGUI extends JFrame implements ActionListener {
                         shift = 1;
                 }
                 //Map every letter of the alphabet to another letter in the alphabet, shifted by x places.
-                for(int i=0; i<alphabetPlus.length(); i++){
+                if(vigenere == false)
+                    for(int i=0; i<alphabetPlus.length(); i++){
                         alphaMap.put(alphabetPlus.charAt(i), alphabetPlus.charAt((i+shift)%alphabetPlus.length()));
+                    }
+                
+                else {
+                    
+                    String key = getKey();
+                    ArrayList<Character> shifts = new ArrayList<>();
+                    
+                    //creates an arraylist of the key word's characters repeated to the necessary number of characters
+                    for(int k = 0; k < inputTA.getText().length(); k++) {
+                        if(key.length() != 0)
+                            shifts.add(key.charAt(k % key.length()));
+                        else
+                            return;
+                    }
+                    
+                    
+                    for(int i=0; i<alphabetPlus.length(); i++){
+                        int vig = Character.getNumericValue(shifts.get(i % shifts.size()));
+                        alphaMap.put(alphabetPlus.charAt(i), alphabetPlus.charAt((i + vig)%alphabetPlus.length()));
+                    }
                 }
+                    
                 //Get input text and put it all to lower-case so it's easy to convert
                 String inputText = inputTA.getText();
                 String outputText = "";
@@ -122,8 +155,8 @@ public class CaesarGUI extends JFrame implements ActionListener {
             inputTA.setText(outputText);
         }
        
-        public void decryptText() throws InterruptedException{
-                HashMap<Character, Character> alphaMap = new HashMap<Character, Character>();
+        public void decryptText(boolean vigenere) throws InterruptedException{
+                HashMap<Character, Character> alphaMap = new HashMap<>();
                 int shift;
                 String textNum = this.shiftFactor.getText();
                 if(!textNum.equals("")){
@@ -132,9 +165,30 @@ public class CaesarGUI extends JFrame implements ActionListener {
                 else{
                         shift = 1;
                 }
-                for(int i=0; i<alphabetPlus.length(); i++){
+                
+                if(vigenere == false)
+                    for(int i=0; i<alphabetPlus.length(); i++){
                         alphaMap.put(alphabetPlus.charAt((i+shift)%alphabetPlus.length()), alphabetPlus.charAt(i));
                 }
+                
+                else { // Unable to use this method: find another one!
+                    
+                    String key = getKey();
+                    ArrayList<Character> shifts = new ArrayList<>();
+                    
+                    for(int k = 0; k < inputTA.getText().length(); k++) {
+                        if(key.length() != 0)
+                            shifts.add(key.charAt(k % key.length()));
+                        else
+                            return;
+                    }
+                    
+                    for(int i=0; i<alphabetPlus.length(); i++){
+                        int vig = Character.getNumericValue(shifts.get(i % shifts.size()));
+                        alphaMap.put(alphabetPlus.charAt((i + vig) % alphabetPlus.length()), alphabetPlus.charAt(i));
+                    }
+                }
+                
                 String inputText = inputTA.getText();
                 String outputText = "";
                 for(int j=0; j<inputText.length(); j++){
@@ -149,10 +203,10 @@ public class CaesarGUI extends JFrame implements ActionListener {
             setDefaultCloseOperation(3);
  
             Container content = getContentPane();
-            GridLayout layout = new GridLayout(3, 0, 0, 10);
+            GridLayout layout = new GridLayout(4, 0, 4, 0);
             content.setLayout(layout);
  
-            inputTA = new JTextArea("Insert the text to be encrypted/decrypted here, then press the appropriate button.", 12, 40);
+            inputTA = new JTextArea("", 12, 40);
             inputTA.setLineWrap(true);
             inputTA.setWrapStyleWord(true);
             inputTA.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
@@ -169,21 +223,32 @@ public class CaesarGUI extends JFrame implements ActionListener {
             content.add(scroller2);*/
            
             JPanel box1 = new JPanel();
+            JPanel box2 = new JPanel();
             box1.setLayout(new FlowLayout());
+            box2.setLayout(new FlowLayout());
             JButton decryptButton = new JButton("Decrypt");
             JButton encryptButton = new JButton("Encrypt");
-            JButton rotButton = new JButton("Rotate");
+            JButton rotButton = new JButton("ROT 13");
+            JButton vigEnButton = new JButton("Vigenere Encrypt");
+            JButton vigDeButton = new JButton("Vigenere Decrypt");
             decryptButton.addActionListener(this);
             encryptButton.addActionListener(this);
             rotButton.addActionListener(this);
-            box1.add(decryptButton);
-            box1.add(encryptButton);
+            vigEnButton.addActionListener(this);
+            vigDeButton.addActionListener(this);
             box1.add(rotButton);
+            box1.add(encryptButton);
+            box1.add(decryptButton);
             box1.add(new JLabel("Shift Factor"));
-            box1.add(this.shiftFactor = new JTextField(20));
+            box1.add(this.shiftFactor = new JTextField(10));
+            box2.add(vigEnButton);
+            box2.add(vigDeButton);
+            box2.add(new JLabel("Key Phrase"));
+            box2.add(this.keyPhrase = new JTextField(20));
             this.shiftFactor.setText("1");
-            box1.setBackground(Color.YELLOW);
+            //box1.setBackground(Color.YELLOW);
             content.add(box1);
+            content.add(box2);
            
             pack();
         }
@@ -191,11 +256,11 @@ public class CaesarGUI extends JFrame implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             
-            int rotShift = getShift(lower.length());
+            //int rotShift = getShift(lower.length());
             
                 if(e.getActionCommand().equals("Encrypt")){
                         try{
-                                encryptText();
+                                encryptText(false);
                         }
                         catch(InterruptedException e1){
                                 e1.printStackTrace();
@@ -203,14 +268,28 @@ public class CaesarGUI extends JFrame implements ActionListener {
                 }
                 if (e.getActionCommand().equals("Decrypt")){
                       try {
-                        decryptText();
+                        decryptText(false);
                       } catch (InterruptedException e1) {
                         e1.printStackTrace();
                       }
                 }
-                if(e.getActionCommand().equals("Rotate")){
+                if(e.getActionCommand().equals("ROT 13")){
                       try {
-                          rotEncrypt(rotShift);
+                          rotEncrypt(13);
+                      } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                      }
+                }
+                if(e.getActionCommand().equals("Vigenere Encrypt")){
+                      try {
+                          encryptText(true);
+                      } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                      }
+                }
+                if(e.getActionCommand().equals("Vigenere Decrypt")){
+                      try {
+                          decryptText(true);
                       } catch (InterruptedException e1) {
                         e1.printStackTrace();
                       }
